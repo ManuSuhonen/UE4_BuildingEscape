@@ -12,7 +12,6 @@ class BUILDINGESCAPE_API UWorldPosition : public UActorComponent
 {
 	
 	GENERATED_BODY()
-	//__pragma (warning(disable: 4541)) 
 public:	
 	// Sets default values for this component's properties
 	UWorldPosition();

@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "WorldPosition.h"
-#include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values for this component's properties
 UWorldPosition::UWorldPosition()
@@ -18,22 +18,23 @@ void UWorldPosition::BeginPlay()
 {
 	Super::BeginPlay();
 
+	auto owner = GetOwner();
 
-	auto world = this->GetOwner()->GetWorld();
+	UE_LOG(LogTemp,Error, TEXT("this component is attached to: %s"),*(owner->GetName()));
 
-	TArray<AActor*> AllActors;
-  	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AActor::StaticClass(),AllActors);
+
+	AActor* actor = owner->GetOwner();
 	
-	for (auto &&i : AllActors)
+	if(actor == nullptr)
 	{
-		UE_LOG(LogTemp,Error, TEXT("Hellos from %s"),*(i->GetName()));
+		UE_LOG(LogTemp,Error, TEXT("owner is: null"));
 	}
-
-	UE_LOG(LogTemp,Error, TEXT("Hellos from %i"),AllActors.Num());
-
-	//auto name = StaticClass()->GetName();
-	UE_LOG(LogTemp,Error, TEXT("Hellos from %s"),*(world->GetName()));
-	//UE_LOG(LogTemp,Error, TEXT("children count %i"),name->GetComponents().Num());
+	else
+	{
+		UE_LOG(LogTemp,Error, TEXT("owner is not null"));
+	}
+	
+	//UE_LOG(LogTemp,Error, TEXT("owners parent is: %i"),actor == nullptr);
 	
 }
 
