@@ -1,6 +1,4 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "WorldPosition.h"
 
 // Sets default values for this component's properties
@@ -18,8 +16,12 @@ UWorldPosition::UWorldPosition()
 void UWorldPosition::BeginPlay()
 {
 	Super::BeginPlay();
-
 	// ...
+	//auto temp2 = typeid(*this).name();
+	//auto temp = __FILE__;
+	auto name = this->GetName();
+	//auto name = StaticClass()->GetName();
+	UE_LOG(LogTemp,Error, TEXT("Hellos from %s"),*name);
 	
 }
 
