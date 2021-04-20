@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "WorldPosition.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UWorldPosition::UWorldPosition()
@@ -16,12 +17,23 @@ UWorldPosition::UWorldPosition()
 void UWorldPosition::BeginPlay()
 {
 	Super::BeginPlay();
-	// ...
-	//auto temp2 = typeid(*this).name();
-	//auto temp = __FILE__;
-	auto name = this->GetName();
+
+
+	auto world = this->GetOwner()->GetWorld();
+
+	TArray<AActor*> AllActors;
+  	UGameplayStatics::GetAllActorsOfClass(GetWorld(),AActor::StaticClass(),AllActors);
+	
+	for (auto &&i : AllActors)
+	{
+		UE_LOG(LogTemp,Error, TEXT("Hellos from %s"),*(i->GetName()));
+	}
+
+	UE_LOG(LogTemp,Error, TEXT("Hellos from %i"),AllActors.Num());
+
 	//auto name = StaticClass()->GetName();
-	UE_LOG(LogTemp,Error, TEXT("Hellos from %s"),*name);
+	UE_LOG(LogTemp,Error, TEXT("Hellos from %s"),*(world->GetName()));
+	//UE_LOG(LogTemp,Error, TEXT("children count %i"),name->GetComponents().Num());
 	
 }
 
