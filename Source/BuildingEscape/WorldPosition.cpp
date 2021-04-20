@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "WorldPosition.h"
 #include "GameFramework/Actor.h"
+#include "Components/SceneComponent.h"
 
 // Sets default values for this component's properties
 UWorldPosition::UWorldPosition()
@@ -19,23 +20,15 @@ void UWorldPosition::BeginPlay()
 	Super::BeginPlay();
 
 	auto owner = GetOwner();
+	owner->GetRootComponent()->SetMobility(EComponentMobility::Type::Movable);
+	
+	auto trans = owner->GetTransform().GetLocation().ToString();
 
 	UE_LOG(LogTemp,Error, TEXT("this component is attached to: %s"),*(owner->GetName()));
-
-
-	AActor* actor = owner->GetOwner();
-	
-	if(actor == nullptr)
-	{
-		UE_LOG(LogTemp,Error, TEXT("owner is: null"));
-	}
-	else
-	{
-		UE_LOG(LogTemp,Error, TEXT("owner is not null"));
-	}
-	
-	//UE_LOG(LogTemp,Error, TEXT("owners parent is: %i"),actor == nullptr);
-	
+	UE_LOG(LogTemp,Error, TEXT("owners Location is %s"),*trans);
+	const FVector NewLocation(1,1,1);
+	owner->SetActorLocation(NewLocation);
+	UE_LOG(LogTemp,Error, TEXT("owners new Location is %s"),*trans);
 }
 
 
