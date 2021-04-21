@@ -32,6 +32,13 @@ void UWorldPosition::BeginPlay()
 	//const FVector NewLocation(1,1,FMath::Sin(UGameplayStatics::GetRealTimeSeconds(GetWorld())));
 	//owner->SetActorLocation(NewLocation);
 	UE_LOG(LogTemp,Error, TEXT("owners new Location is %s"),*trans);
+
+
+	UActorComponent* __basePointer = this;
+
+	//__basePointer->GetOwner()->GetName()
+
+	UE_LOG(LogTemp,Error, TEXT("__basePointer %s"),*__basePointer->GetOwner()->GetName());
 }
 
 
@@ -41,17 +48,21 @@ void UWorldPosition::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
-	auto owner = GetOwner();
-	auto X = owner->GetActorLocation().X;
-	auto Y = owner->GetActorLocation().Y;
-	auto Z = owner->GetActorLocation().Z;
 
-	#define time() UGameplayStatics::GetRealTimeSeconds(GetWorld())
+	auto func = [&]() mutable -> void
+	{
+		auto owner = GetOwner();
+		auto X = owner->GetActorLocation().X;
+		auto Y = owner->GetActorLocation().Y;
 
-	auto sin = (FMath::Sin(time())+1)*30;
+		#define time() UGameplayStatics::GetRealTimeSeconds(GetWorld())
 
-	const FVector NewLocation(X,Y,sin+70);
-	owner->SetActorLocation(NewLocation);
+		auto sin = (FMath::Sin(time())+1)*30;
 
+		const FVector NewLocation(X,Y,sin+70);
+		owner->SetActorLocation(NewLocation);
+	};
+
+	func();
 }
 
