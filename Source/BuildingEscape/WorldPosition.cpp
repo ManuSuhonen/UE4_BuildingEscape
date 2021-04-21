@@ -22,23 +22,17 @@ void UWorldPosition::BeginPlay()
 
 	auto owner = GetOwner();
 	owner->GetRootComponent()->SetMobility(EComponentMobility::Type::Movable);
-	auto trans = owner->GetTransform().GetLocation().ToString();
-
-	UE_LOG(LogTemp,Error, TEXT("this component is attached to: %s"),*(owner->GetName()));
-	UE_LOG(LogTemp,Error, TEXT("owners Location is %s"),*trans);
-
-	//FMath::Sin(UGameplayStatics::GetRealTimeSeconds(GetWorld()));
-
-	//const FVector NewLocation(1,1,FMath::Sin(UGameplayStatics::GetRealTimeSeconds(GetWorld())));
-	//owner->SetActorLocation(NewLocation);
-	UE_LOG(LogTemp,Error, TEXT("owners new Location is %s"),*trans);
 
 
-	UActorComponent* __basePointer = this;
+	FString name = this->GetName();
+	FString ownerName = this->GetOwner()->GetName();
+	FString location = this->GetOwner()->GetTransform().GetLocation().ToString();
 
-	//__basePointer->GetOwner()->GetName()
 
-	UE_LOG(LogTemp,Error, TEXT("__basePointer %s"),*__basePointer->GetOwner()->GetName());
+	UE_LOG(LogTemp,Error, TEXT("%s's owner is %s. Location is %s"),*name,*ownerName,*location);
+
+
+
 }
 
 
