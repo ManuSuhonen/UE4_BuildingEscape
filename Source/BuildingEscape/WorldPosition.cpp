@@ -29,7 +29,7 @@ void UWorldPosition::BeginPlay()
 	FString location = this->GetOwner()->GetTransform().GetLocation().ToString();
 
 
-	UE_LOG(LogTemp,Error, TEXT("%s's owner is %s. Location is %s"),*name,*ownerName,*location);
+	UE_LOG(LogTemp,Display, TEXT("%s's owner is %s. Location is %s"),*name,*ownerName,*location);
 
 
 
