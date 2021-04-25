@@ -22,14 +22,15 @@ void UDoorOpen::BeginPlay()
 
 	// ...
 	//this->GetOwner()->GetRootComponent()->SetMobility(EComponentMobility::Movable);
+	
+	//auto rotate = this->GetOwner()->GetActorRotation();
+	//UE_LOG(LogTemp,Display, TEXT("%s"),*rotate.ToString());
+	//rotate.Yaw = 270;
 
-	auto rotate = this->GetOwner()->GetActorRotation();
+	start = {0,180,0};
+	end = {0,270,0};
 
-	UE_LOG(LogTemp,Display, TEXT("%s"),*rotate.ToString());
-
-	rotate.Yaw = 270;
-
-	GetOwner()->SetActorRotation(rotate);
+	//GetOwner()->SetActorRotation({0,270,0});
 
 }
 
@@ -40,5 +41,11 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+
+	start = FMath::Lerp(start,end,0.01f);
+
+	UE_LOG(LogTemp,Display, TEXT("%s"),*start.ToString());
+
+	GetOwner()->SetActorRotation(start);
 }
 
