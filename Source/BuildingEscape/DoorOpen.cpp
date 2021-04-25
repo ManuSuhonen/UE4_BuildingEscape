@@ -27,8 +27,8 @@ void UDoorOpen::BeginPlay()
 	//UE_LOG(LogTemp,Display, TEXT("%s"),*rotate.ToString());
 	//rotate.Yaw = 270;
 
-	start = {0,180,0};
-	end = {0,270,0};
+	//start = {0,180,0};
+	//end = {0,270,0};
 
 	//GetOwner()->SetActorRotation({0,270,0});
 

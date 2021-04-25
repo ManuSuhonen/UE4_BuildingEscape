@@ -24,8 +24,13 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="start FRotator")
 	FRotator start;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="end FRotator")
 	FRotator end;
+	
 
 		
 };
