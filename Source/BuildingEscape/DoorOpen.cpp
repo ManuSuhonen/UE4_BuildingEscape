@@ -3,6 +3,7 @@
 
 #include "DoorOpen.h"
 #include "GameFramework/Actor.h"
+#include <functional>
 
 // Sets default values for this component's properties
 UDoorOpen::UDoorOpen()
@@ -32,6 +33,13 @@ void UDoorOpen::BeginPlay()
 
 	//GetOwner()->SetActorRotation({0,270,0});
 
+	initialYaw = GetOwner()->GetActorRotation().Yaw;
+	currentYaw = initialYaw;
+	targetYaw += initialYaw;
+
+	TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
+	TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
+
 }
 
 
@@ -40,12 +48,30 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	//UE_LOG(LogTemp,Display, TEXT("%s"),*start.ToString());
 
-	start = FMath::Lerp(start,end,0.01f);
-
-	UE_LOG(LogTemp,Display, TEXT("%s"),*start.ToString());
-
-	GetOwner()->SetActorRotation(start);
+	
 }
 
+
+void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
+{
+	UE_LOG(LogTemp,Display, TEXT("overlap detected"));
+
+	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
+
+	auto doorRotation = GetOwner()->GetActorRotation();
+	doorRotation.Yaw = currentYaw+90;
+	GetOwner()->SetActorRotation(doorRotation);
+}
+
+void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
+{
+	UE_LOG(LogTemp,Display, TEXT("overlap ended"));
+
+	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
+
+	auto doorRotation = GetOwner()->GetActorRotation();
+	doorRotation.Yaw = currentYaw;
+	GetOwner()->SetActorRotation(doorRotation);
+}

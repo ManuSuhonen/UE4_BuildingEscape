@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/TriggerVolume.h"
 #include "DoorOpen.generated.h"
 
 
@@ -16,6 +17,12 @@ public:
 	// Sets default values for this component's properties
 	UDoorOpen();
 
+	UFUNCTION()
+    void BeginOverlap(AActor* Actor, AActor* OtherActor);
+
+	UFUNCTION()
+	void EndOverlap(AActor* Actor, AActor* OtherActor);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -25,12 +32,15 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="start FRotator")
-	FRotator start;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Door param")
+	float speed;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="end FRotator")
-	FRotator end;
-	
+	float initialYaw;
+	float currentYaw;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Door param")
+	float targetYaw;
 		
+	UPROPERTY(EditAnywhere)
+	ATriggerVolume* TriggerVolume;
 };
