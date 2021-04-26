@@ -56,7 +56,7 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp,Display, TEXT("overlap detected"));
+	UE_LOG(LogTemp,Display, TEXT("overlap detected between %s and %s"),*Actor->GetName(),*OtherActor->GetName());
 
 	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
 
@@ -67,7 +67,7 @@ void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
 
 void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp,Display, TEXT("overlap ended"));
+	UE_LOG(LogTemp,Display, TEXT("overlap between %s and %s ended"),*Actor->GetName(),*OtherActor->GetName());
 
 	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
 
