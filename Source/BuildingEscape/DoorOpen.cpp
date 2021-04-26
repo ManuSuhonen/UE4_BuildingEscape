@@ -3,7 +3,8 @@
 
 #include "DoorOpen.h"
 #include "GameFramework/Actor.h"
-#include <functional>
+#include "GameFramework/DefaultPawn.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UDoorOpen::UDoorOpen()
@@ -37,8 +38,15 @@ void UDoorOpen::BeginPlay()
 	currentYaw = initialYaw;
 	targetYaw += initialYaw;
 
-	TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
-	TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
+	player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+	UE_LOG(LogTemp,Display, TEXT("%s"),*player->GetName());
+
+	if(EventDriven == true)
+	{
+		TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
+		TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
+	}
 
 }
 
@@ -50,7 +58,23 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 
 	//UE_LOG(LogTemp,Display, TEXT("%s"),*start.ToString());
 
-	
+	if(EventDriven == false)
+	{
+		if(TriggerVolume->IsOverlappingActor(player))
+		{
+			currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
+			auto rotate = GetOwner()->GetActorRotation();
+			rotate.Yaw = currentYaw;
+			GetOwner()->SetActorRotation(rotate);
+		}
+		else
+		{
+			currentYaw = FMath::FInterpTo(currentYaw,initialYaw,DeltaTime,speed);
+			auto rotate = GetOwner()->GetActorRotation();
+			rotate.Yaw = currentYaw;
+			GetOwner()->SetActorRotation(rotate);
+		}
+	}
 }
 
 
@@ -59,7 +83,6 @@ void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
 	UE_LOG(LogTemp,Display, TEXT("overlap detected between %s and %s"),*Actor->GetName(),*OtherActor->GetName());
 
 	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
-
 	auto doorRotation = GetOwner()->GetActorRotation();
 	doorRotation.Yaw = currentYaw+90;
 	GetOwner()->SetActorRotation(doorRotation);
@@ -74,4 +97,26 @@ void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
 	auto doorRotation = GetOwner()->GetActorRotation();
 	doorRotation.Yaw = currentYaw;
 	GetOwner()->SetActorRotation(doorRotation);
+}
+
+
+void UDoorOpen::DoorHandling(float DeltaTime)
+{
+	if(EventDriven == false)
+	{
+		if(TriggerVolume->IsOverlappingActor(player))
+		{
+			currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
+			auto rotate = GetOwner()->GetActorRotation();
+			rotate.Yaw = currentYaw;
+			GetOwner()->SetActorRotation(rotate);
+		}
+		else
+		{
+			currentYaw = FMath::FInterpTo(currentYaw,initialYaw,DeltaTime,speed);
+			auto rotate = GetOwner()->GetActorRotation();
+			rotate.Yaw = currentYaw;
+			GetOwner()->SetActorRotation(rotate);
+		}
+	}
 }

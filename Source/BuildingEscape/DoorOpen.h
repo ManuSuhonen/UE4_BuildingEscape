@@ -23,6 +23,9 @@ public:
 	UFUNCTION()
 	void EndOverlap(AActor* Actor, AActor* OtherActor);
 
+
+	void DoorHandling(float DeltaTime);
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
@@ -43,4 +46,11 @@ public:
 		
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* TriggerVolume;
+
+	UPROPERTY(EditAnywhere)
+	AActor* player;
+
+	//True = Event Driven. False = Poll Driven.
+	UPROPERTY(EditAnywhere)
+	bool EventDriven;
 };
