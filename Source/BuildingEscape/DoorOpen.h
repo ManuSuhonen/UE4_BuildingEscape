@@ -59,5 +59,7 @@ public:
 
 	//closes door X seconds from Overlap end
 	UPROPERTY(EditAnywhere)
-	int32 closeDoorAfterSeconds = 2;
+	float closeDoorAfterSeconds = 1.1f;
+
+	float time = 0;
 };
