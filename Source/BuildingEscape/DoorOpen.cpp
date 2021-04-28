@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
+//#include "Engine/World.h"
+//#include "GameFramework/PlayerController.h"
 #include "DoorOpen.h"
 #include "GameFramework/Actor.h"
 #include "GameFramework/DefaultPawn.h"
@@ -38,12 +41,19 @@ void UDoorOpen::BeginPlay()
 	currentYaw = initialYaw;
 	targetYaw += initialYaw;
 
-	player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	//player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+
+	player = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 	UE_LOG(LogTemp,Display, TEXT("%s"),*player->GetName());
 
 	if(EventDriven == true)
 	{
+		if(TriggerVolume == nullptr)
+		{
+			UE_LOG(LogTemp,Display, TEXT("ATriggerVolume not set in editor"),);
+		}
+
 		if(TriggerVolume != nullptr)
 		{		
 			TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
