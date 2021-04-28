@@ -44,10 +44,12 @@ void UDoorOpen::BeginPlay()
 
 	if(EventDriven == true)
 	{
-		TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
-		TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
+		if(TriggerVolume != nullptr)
+		{		
+			TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
+			TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
+		}
 	}
-
 }
 
 
