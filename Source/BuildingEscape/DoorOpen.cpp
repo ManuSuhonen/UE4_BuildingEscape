@@ -47,19 +47,17 @@ void UDoorOpen::BeginPlay()
 
 	UE_LOG(LogTemp,Display, TEXT("%s"),*player->GetName());
 
-	if(EventDriven == true)
+	if(TriggerVolume == nullptr)
 	{
-		if(TriggerVolume == nullptr)
-		{
-			UE_LOG(LogTemp,Display, TEXT("ATriggerVolume not set in editor"),);
-		}
-
-		if(TriggerVolume != nullptr)
-		{		
-			TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
-			TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
-		}
+		UE_LOG(LogTemp,Display, TEXT("ATriggerVolume not set in editor"),);
 	}
+
+	if(TriggerVolume != nullptr)
+	{		
+		TriggerVolume->OnActorBeginOverlap.AddDynamic(this,&UDoorOpen::BeginOverlap);
+		TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
+	}
+
 }
 
 
@@ -81,10 +79,15 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		}
 		else
 		{
-			currentYaw = FMath::FInterpTo(currentYaw,initialYaw,DeltaTime,speed);
-			auto rotate = GetOwner()->GetActorRotation();
-			rotate.Yaw = currentYaw;
-			GetOwner()->SetActorRotation(rotate);
+			if(TimeAfterOverlapEnd.GetSecond()+closeDoorAfterSeconds < FDateTime::Now().GetSecond())
+			{
+				currentYaw = FMath::FInterpTo(currentYaw,initialYaw,DeltaTime,speed);
+				auto rotate = GetOwner()->GetActorRotation();
+				rotate.Yaw = currentYaw;
+				GetOwner()->SetActorRotation(rotate);
+				UE_LOG(LogTemp,Display, TEXT("%s"),*FDateTime::Now().ToString());
+			}
+
 		}
 	}
 }
@@ -94,21 +97,28 @@ void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
 {
 	UE_LOG(LogTemp,Display, TEXT("overlap detected between %s and %s"),*Actor->GetName(),*OtherActor->GetName());
 
-	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
-	auto doorRotation = GetOwner()->GetActorRotation();
-	doorRotation.Yaw = currentYaw+90;
-	GetOwner()->SetActorRotation(doorRotation);
+	if(EventDriven == true)
+	{	
+		auto doorRotation = GetOwner()->GetActorRotation();
+		doorRotation.Yaw = currentYaw+90;
+		GetOwner()->SetActorRotation(doorRotation);
+	}
+
 }
 
 void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
 {
-	UE_LOG(LogTemp,Display, TEXT("overlap between %s and %s ended"),*Actor->GetName(),*OtherActor->GetName());
+	TimeAfterOverlapEnd = FDateTime::Now();
 
-	//currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
+	UE_LOG(LogTemp,Display, TEXT("overlap between %s and %s ended at %s"),*Actor->GetName(),*OtherActor->GetName(),*TimeAfterOverlapEnd.ToString());
 
-	auto doorRotation = GetOwner()->GetActorRotation();
-	doorRotation.Yaw = currentYaw;
-	GetOwner()->SetActorRotation(doorRotation);
+
+	if(EventDriven == true)
+	{
+		auto doorRotation = GetOwner()->GetActorRotation();
+		doorRotation.Yaw = currentYaw;
+		GetOwner()->SetActorRotation(doorRotation);
+	}
 }
 
 

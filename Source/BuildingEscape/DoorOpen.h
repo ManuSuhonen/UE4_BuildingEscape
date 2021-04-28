@@ -5,7 +5,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/TriggerVolume.h"
+#include "Misc/DateTime.h"
 #include "DoorOpen.generated.h"
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -47,10 +49,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* TriggerVolume;
 
-	UPROPERTY(EditAnywhere)
 	AActor* player;
 
 	//True = Event Driven. False = Poll Driven.
 	UPROPERTY(EditAnywhere)
 	bool EventDriven;
+
+	FDateTime TimeAfterOverlapEnd;
+
+	//closes door X seconds from Overlap end
+	UPROPERTY(EditAnywhere)
+	int32 closeDoorAfterSeconds = 2;
 };
