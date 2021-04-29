@@ -51,10 +51,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	DrawDebugLine(GetWorld(),vector,lineEnd,FColor::Red,false,0,0,5);
 
 	TArray<FHitResult> OutHits;
-	FVector Start;
-	FVector End;
-	FCollisionObjectQueryParams ObjectQueryParams;
-	FCollisionQueryParams Params;
 
 	bool hits = GetWorld()->LineTraceMultiByObjectType(OutHits,vector,lineEnd,FCollisionObjectQueryParams::AllObjects,FCollisionQueryParams::DefaultQueryParam);
 
@@ -63,7 +59,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	{
 		for (const auto& ref: OutHits)
 		{
-			UE_LOG(LogTemp,Display, TEXT("object hit name: %s"),*ref.GetActor()->GetName());
+			if(ref.GetActor() != nullptr) UE_LOG(LogTemp,Display, TEXT("object hit name: %s"),*ref.GetActor()->GetName());
 		}
 	}	
 }
