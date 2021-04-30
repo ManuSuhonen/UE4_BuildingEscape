@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -23,4 +24,24 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
+	void Grab(void);
+	void Release(void);
+
+	//Length of the player's arm to grab physics object.
+	UPROPERTY(EditAnywhere)
+	float RayLength = 100.f;
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
+	UInputComponent* InputComponent = nullptr;
+
+	FVector playervector;
+	FRotator playerrotator;
+	FVector lineEnd;
+
+	FHitResult OutHit;
+	FCollisionQueryParams TraceParam;
+	FCollisionObjectQueryParams ObjectParams;
+	bool hits;
+
 };

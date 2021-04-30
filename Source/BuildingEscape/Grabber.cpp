@@ -24,7 +24,27 @@ void UGrabber::BeginPlay()
 
 	// ...
 	UE_LOG(LogTemp,Display, TEXT("Grabber Initialized"));
-	
+	PhysicsHandle =  GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+
+	if(PhysicsHandle == nullptr)
+	{
+		UE_LOG(LogTemp,Error, TEXT("%s has no Physics Handle Component"),*GetOuter()->GetName());
+	}
+
+	if(InputComponent == nullptr)
+	{
+		UE_LOG(LogTemp,Error, TEXT("%s has no Input Component"),*GetOuter()->GetName());
+	}
+
+	if(InputComponent != nullptr)
+	{
+		InputComponent->BindAction("Grab",IE_Pressed,this,&UGrabber::Grab);
+		InputComponent->BindAction("Grab",IE_Released,this,&UGrabber::Release);
+	}
+
+	TraceParam = FCollisionQueryParams(FName(TEXT("")),false,GetOwner());
+	ObjectParams = FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody);
 }
 
 
@@ -33,30 +53,39 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT playervector,OUT playerrotator);
 
-	FVector playervector;
-	FRotator playerrotator;
+	lineEnd = playervector + playerrotator.Vector() * RayLength;
+
+	if(PhysicsHandle->GrabbedComponent != nullptr)
+	{
+		PhysicsHandle->SetTargetLocation(lineEnd);
+	}
+}
+
+
+void UGrabber::Grab(void)
+{
+	UE_LOG(LogTemp,Display, TEXT("Grab event triggered."));
 
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT playervector,OUT playerrotator);
 
-	//UE_LOG(LogTemp,Display, TEXT("vector: %s	rotator: %s"),*vector.ToString(),*rotator.ToString());
+	lineEnd = playervector + playerrotator.Vector() * RayLength;
 
-	FVector lineEnd = playervector + playerrotator.Vector() * 100;
+	DrawDebugLine(GetWorld(),playervector,lineEnd,FColor::Red,false,1,0,5);
 
-	DrawDebugLine(GetWorld(),playervector,lineEnd,FColor::Red,false,0,0,5);
-
-	FHitResult OutHit;
-	FCollisionQueryParams TraceParam(FName(TEXT("")),false,GetOwner());
-	FCollisionObjectQueryParams ObjectParams(ECollisionChannel::ECC_PhysicsBody);
-
-	bool hits = GetWorld()->LineTraceSingleByObjectType(OUT OutHit,playervector,lineEnd,ObjectParams,TraceParam);
+	hits = GetWorld()->LineTraceSingleByObjectType(OUT OutHit,playervector,lineEnd,ObjectParams,TraceParam);
 
 	if(hits)
 	{
-		UE_LOG(LogTemp,Display, TEXT("Raycast hit: %s"),*OutHit.GetActor()->GetName());
+		UE_LOG(LogTemp,Display, TEXT("RayCast hit: %s"),*OutHit.GetActor()->GetName());
+		PhysicsHandle->GrabComponentAtLocation(OutHit.GetComponent(),NAME_None,lineEnd);
 	}	
-
 
 }
 
+void UGrabber::Release(void)
+{
+	UE_LOG(LogTemp,Display, TEXT("Release event triggered."));
+	PhysicsHandle->ReleaseComponent();
+}
