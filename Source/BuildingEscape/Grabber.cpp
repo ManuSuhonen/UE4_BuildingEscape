@@ -35,32 +35,43 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	// ...
 
-	FVector vector;
-	FRotator rotator;
+	FVector playervector;
+	FRotator playerrotator;
 
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT vector,OUT rotator);
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT playervector,OUT playerrotator);
 
 	//UE_LOG(LogTemp,Display, TEXT("vector: %s	rotator: %s"),*vector.ToString(),*rotator.ToString());
 
 
-	auto lineEnd = vector + rotator.Vector() * 100;
+	auto lineEnd = playervector + playerrotator.Vector() * 100;
+	playervector = playervector + playerrotator.Vector() * 40;
 
 
 	//UE_LOG(LogTemp,Display, TEXT("vector: %s	endvector: %s"),*vector.ToString(),*lineEnd.ToString());
 
-	DrawDebugLine(GetWorld(),vector,lineEnd,FColor::Red,false,0,0,5);
+	DrawDebugLine(GetWorld(),playervector,lineEnd,FColor::Red,false,0,0,5);
 
 	TArray<FHitResult> OutHits;
 
-	bool hits = GetWorld()->LineTraceMultiByObjectType(OutHits,vector,lineEnd,FCollisionObjectQueryParams::AllObjects,FCollisionQueryParams::DefaultQueryParam);
+	bool hits = GetWorld()->LineTraceMultiByObjectType(OutHits,playervector,lineEnd,FCollisionObjectQueryParams::AllDynamicObjects,FCollisionQueryParams::DefaultQueryParam);
 
-	
 	if(hits)
 	{
-		for (const auto& ref: OutHits)
+		for (const FHitResult& ref: OutHits)
 		{
-			if(ref.GetActor() != nullptr) UE_LOG(LogTemp,Display, TEXT("object hit name: %s"),*ref.GetActor()->GetName());
+			if(ref.GetActor() != nullptr) 
+			{
+				UE_LOG(LogTemp,Display, TEXT("object hit name: %s"),*ref.GetActor()->GetName());
+				
+				if(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::LeftMouseButton))
+				{
+						ref.GetActor()->SetActorLocation(lineEnd);
+				}
+
+			}
 		}
 	}	
+
+
 }
 
