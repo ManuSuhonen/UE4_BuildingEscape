@@ -42,34 +42,19 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	//UE_LOG(LogTemp,Display, TEXT("vector: %s	rotator: %s"),*vector.ToString(),*rotator.ToString());
 
-
-	auto lineEnd = playervector + playerrotator.Vector() * 100;
-	playervector = playervector + playerrotator.Vector() * 40;
-
-
-	//UE_LOG(LogTemp,Display, TEXT("vector: %s	endvector: %s"),*vector.ToString(),*lineEnd.ToString());
+	FVector lineEnd = playervector + playerrotator.Vector() * 100;
 
 	DrawDebugLine(GetWorld(),playervector,lineEnd,FColor::Red,false,0,0,5);
 
-	TArray<FHitResult> OutHits;
+	FHitResult OutHit;
+	FCollisionQueryParams TraceParam(FName(TEXT("")),false,GetOwner());
+	FCollisionObjectQueryParams ObjectParams(ECollisionChannel::ECC_PhysicsBody);
 
-	bool hits = GetWorld()->LineTraceMultiByObjectType(OutHits,playervector,lineEnd,FCollisionObjectQueryParams::AllDynamicObjects,FCollisionQueryParams::DefaultQueryParam);
+	bool hits = GetWorld()->LineTraceSingleByObjectType(OUT OutHit,playervector,lineEnd,ObjectParams,TraceParam);
 
 	if(hits)
 	{
-		for (const FHitResult& ref: OutHits)
-		{
-			if(ref.GetActor() != nullptr) 
-			{
-				UE_LOG(LogTemp,Display, TEXT("object hit name: %s"),*ref.GetActor()->GetName());
-				
-				if(GetWorld()->GetFirstPlayerController()->IsInputKeyDown(EKeys::LeftMouseButton))
-				{
-						ref.GetActor()->SetActorLocation(lineEnd);
-				}
-
-			}
-		}
+		UE_LOG(LogTemp,Display, TEXT("Raycast hit: %s"),*OutHit.GetActor()->GetName());
 	}	
 
 
