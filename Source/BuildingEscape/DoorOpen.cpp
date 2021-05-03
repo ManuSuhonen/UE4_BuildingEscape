@@ -8,6 +8,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/DefaultPawn.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/PrimitiveComponent.h"
 
 // Sets default values for this component's properties
 UDoorOpen::UDoorOpen()
@@ -92,7 +93,7 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 {
 	if(EventDriven == false)
 	{
-		if(TriggerVolume->IsOverlappingActor(player))
+		if(TotalMass() > RequiredMass)
 		{
 			currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
 			auto rotate = GetOwner()->GetActorRotation();
@@ -112,4 +113,22 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 			}
 		}
 	}
+}
+
+
+
+float UDoorOpen::TotalMass()
+{
+	float totalmass = 0;
+	TArray<AActor*> overlappingactors;
+	TriggerVolume->GetOverlappingActors(overlappingactors);
+
+	for (const auto ref:overlappingactors)
+	{
+		totalmass += ref->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+	}
+
+	UE_LOG(LogTemp,Display, TEXT("total mass: %f"),totalmass);
+	
+	return totalmass;
 }

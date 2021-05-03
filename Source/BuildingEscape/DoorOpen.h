@@ -25,8 +25,9 @@ public:
 	UFUNCTION()
 	void EndOverlap(AActor* Actor, AActor* OtherActor);
 
-
 	void DoorHandling(float DeltaTime);
+
+	float TotalMass();
 
 protected:
 	// Called when the game starts
@@ -62,4 +63,9 @@ public:
 	float closeDoorAfterSeconds = 1.1f;
 
 	float time = 0;
+
+
+	//Mass required to open door.
+	UPROPERTY(EditAnywhere)
+	float RequiredMass;
 };
