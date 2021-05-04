@@ -98,7 +98,6 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 		if(TotalMass() > RequiredMass)
 		{
 			OpenSound();
-
 			currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
 			auto rotate = GetOwner()->GetActorRotation();
 			rotate.Yaw = currentYaw;
@@ -114,7 +113,6 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 				auto rotate = GetOwner()->GetActorRotation();
 				rotate.Yaw = currentYaw;
 				GetOwner()->SetActorRotation(rotate);
-
 				CloseSound();
 			}
 		}
