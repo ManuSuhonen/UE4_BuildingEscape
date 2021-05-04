@@ -55,6 +55,8 @@ void UDoorOpen::BeginPlay()
 		TriggerVolume->OnActorEndOverlap.AddDynamic(this,&UDoorOpen::EndOverlap);
 	}
 
+	IsOpen = false;
+
 }
 
 
@@ -99,18 +101,26 @@ void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
 
 void UDoorOpen::DoorHandling(float DeltaTime)
 {
+	//UE_LOG(LogTemp,Display, TEXT("%i"),IsOpen);
 	if(EventDriven == false)
 	{
 		if(TotalMass() > RequiredMass)
 		{
+			if(IsOpen == false)
+			{
+				UE_LOG(LogTemp,Display, TEXT("open sound playing"));
+				AudioComponent->Activate();
+				AudioComponent->Play();
+				IsOpen = true;
+			}
+
 			currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
 			auto rotate = GetOwner()->GetActorRotation();
 			rotate.Yaw = currentYaw;
 			GetOwner()->SetActorRotation(rotate);
 			time = GetWorld()->GetTimeSeconds();
-			//AudioComponent->Activate();
-			//AudioComponent->Play();
 		}
+		
 		else
 		{
 			if(time+closeDoorAfterSeconds < GetWorld()->GetTimeSeconds())
@@ -119,9 +129,13 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 				auto rotate = GetOwner()->GetActorRotation();
 				rotate.Yaw = currentYaw;
 				GetOwner()->SetActorRotation(rotate);
-				AudioComponent->Activate();
-				AudioComponent->Play();
-				//UE_LOG(LogTemp,Display, TEXT("%s"),*FDateTime::Now().ToString());
+				if(IsOpen == true)
+				{
+					UE_LOG(LogTemp,Display, TEXT("close sound playing"));
+					AudioComponent->Activate();
+					AudioComponent->Play();
+					IsOpen = false;
+				}
 			}
 		}
 	}
@@ -140,7 +154,7 @@ float UDoorOpen::TotalMass()
 		totalmass += ref->FindComponentByClass<UPrimitiveComponent>()->GetMass();
 	}
 
-	UE_LOG(LogTemp,Display, TEXT("total mass: %f"),totalmass);
+	//UE_LOG(LogTemp,Display, TEXT("total mass: %f"),totalmass);
 	
 	return totalmass;
 }

@@ -69,4 +69,7 @@ public:
 	//Mass required to open door.
 	UPROPERTY(EditAnywhere)
 	float RequiredMass;
+
+
+	bool IsOpen;
 };
