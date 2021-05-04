@@ -49,6 +49,7 @@ public:
 		
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* TriggerVolume;
+	UAudioComponent* AudioComponent;
 
 	AActor* player;
 

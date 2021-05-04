@@ -9,6 +9,7 @@
 #include "GameFramework/DefaultPawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values for this component's properties
 UDoorOpen::UDoorOpen()
@@ -33,8 +34,15 @@ void UDoorOpen::BeginPlay()
 	//player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
 	player = GetWorld()->GetFirstPlayerController()->GetPawn();
+	AudioComponent = GetOwner()->FindComponentByClass<UAudioComponent>();
 
 	//UE_LOG(LogTemp,Display, TEXT("%s"),*player->GetName());
+
+	if(AudioComponent == nullptr)
+	{
+		UE_LOG(LogTemp,Display, TEXT("AudioComponent not set in editor"),);
+	}
+
 
 	if(TriggerVolume == nullptr)
 	{
@@ -100,6 +108,8 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 			rotate.Yaw = currentYaw;
 			GetOwner()->SetActorRotation(rotate);
 			time = GetWorld()->GetTimeSeconds();
+			//AudioComponent->Activate();
+			//AudioComponent->Play();
 		}
 		else
 		{
@@ -109,6 +119,8 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 				auto rotate = GetOwner()->GetActorRotation();
 				rotate.Yaw = currentYaw;
 				GetOwner()->SetActorRotation(rotate);
+				AudioComponent->Activate();
+				AudioComponent->Play();
 				//UE_LOG(LogTemp,Display, TEXT("%s"),*FDateTime::Now().ToString());
 			}
 		}
