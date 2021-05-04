@@ -28,6 +28,8 @@ public:
 	void DoorHandling(float DeltaTime);
 
 	float TotalMass();
+	void OpenSound();
+	void CloseSound();
 
 protected:
 	// Called when the game starts

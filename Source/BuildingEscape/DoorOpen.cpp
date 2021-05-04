@@ -10,6 +10,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/PrimitiveComponent.h"
 #include "Components/AudioComponent.h"
+#include "Misc/App.h"
 
 // Sets default values for this component's properties
 UDoorOpen::UDoorOpen()
@@ -20,7 +21,6 @@ UDoorOpen::UDoorOpen()
 
 	// ...
 }
-
 
 // Called when the game starts
 void UDoorOpen::BeginPlay()
@@ -59,7 +59,6 @@ void UDoorOpen::BeginPlay()
 
 }
 
-
 // Called every frame
 void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -69,11 +68,9 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	
 }
 
-
 void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
 {
 	//UE_LOG(LogTemp,Display, TEXT("overlap detected between %s and %s"),*Actor->GetName(),*OtherActor->GetName());
-
 	if(EventDriven == true)
 	{	
 		auto doorRotation = GetOwner()->GetActorRotation();
@@ -85,11 +82,6 @@ void UDoorOpen::BeginOverlap(AActor* Actor, AActor* OtherActor)
 
 void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
 {
-	//TimeAfterOverlapEnd = FDateTime::Now();
-
-	//UE_LOG(LogTemp,Display, TEXT("overlap between %s and %s ended at %s"),*Actor->GetName(),*OtherActor->GetName(),*TimeAfterOverlapEnd.ToString());
-
-
 	if(EventDriven == true)
 	{
 		auto doorRotation = GetOwner()->GetActorRotation();
@@ -98,7 +90,6 @@ void UDoorOpen::EndOverlap(AActor* Actor, AActor* OtherActor)
 	}
 }
 
-
 void UDoorOpen::DoorHandling(float DeltaTime)
 {
 	//UE_LOG(LogTemp,Display, TEXT("%i"),IsOpen);
@@ -106,13 +97,7 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 	{
 		if(TotalMass() > RequiredMass)
 		{
-			if(IsOpen == false)
-			{
-				UE_LOG(LogTemp,Display, TEXT("open sound playing"));
-				AudioComponent->Activate();
-				AudioComponent->Play();
-				IsOpen = true;
-			}
+			OpenSound();
 
 			currentYaw = FMath::FInterpTo(currentYaw,targetYaw,DeltaTime,speed);
 			auto rotate = GetOwner()->GetActorRotation();
@@ -129,19 +114,12 @@ void UDoorOpen::DoorHandling(float DeltaTime)
 				auto rotate = GetOwner()->GetActorRotation();
 				rotate.Yaw = currentYaw;
 				GetOwner()->SetActorRotation(rotate);
-				if(IsOpen == true)
-				{
-					UE_LOG(LogTemp,Display, TEXT("close sound playing"));
-					AudioComponent->Activate();
-					AudioComponent->Play();
-					IsOpen = false;
-				}
+
+				CloseSound();
 			}
 		}
 	}
 }
-
-
 
 float UDoorOpen::TotalMass()
 {
@@ -158,3 +136,31 @@ float UDoorOpen::TotalMass()
 	
 	return totalmass;
 }
+
+
+
+void UDoorOpen::OpenSound()
+{
+	if(IsOpen == false)
+	{
+		UE_LOG(LogTemp,Display, TEXT("open sound playing"));
+		AudioComponent->Activate();
+		AudioComponent->Play();
+		IsOpen = true;
+	}
+}
+
+
+void UDoorOpen::CloseSound()
+{
+	if(IsOpen == true)
+	{
+		UE_LOG(LogTemp,Display, TEXT("close sound playing"));
+		AudioComponent->Activate();
+		AudioComponent->Play();
+		IsOpen = false;
+	}
+}
+
+
+
