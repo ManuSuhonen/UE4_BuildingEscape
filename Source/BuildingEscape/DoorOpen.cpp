@@ -65,6 +65,7 @@ void UDoorOpen::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	DoorHandling(DeltaTime);
+	//UE_LOG(LogTemp,Display, TEXT("count is %i"),*Actor->GetName(),*OtherActor);
 	
 }
 
