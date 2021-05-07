@@ -34,6 +34,9 @@ void UDoorOpen::BeginPlay()
 	//player = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 
 	player = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	//Up_player(GetWorld()->GetFirstPlayerController()->GetPawn());
+
 	AudioComponent = GetOwner()->FindComponentByClass<UAudioComponent>();
 
 	UE_LOG(LogTemp,Display, TEXT("Owner Name %s"),*GetOwner()->GetName());
