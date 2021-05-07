@@ -36,17 +36,17 @@ void UDoorOpen::BeginPlay()
 	player = GetWorld()->GetFirstPlayerController()->GetPawn();
 	AudioComponent = GetOwner()->FindComponentByClass<UAudioComponent>();
 
-	//UE_LOG(LogTemp,Display, TEXT("%s"),*player->GetName());
+	UE_LOG(LogTemp,Display, TEXT("Owner Name %s"),*GetOwner()->GetName());
 
 	if(AudioComponent == nullptr)
 	{
-		UE_LOG(LogTemp,Display, TEXT("AudioComponent not set in editor"),);
+		UE_LOG(LogTemp,Error, TEXT("AudioComponent not set in editor"),);
 	}
 
 
 	if(TriggerVolume == nullptr)
 	{
-		UE_LOG(LogTemp,Display, TEXT("ATriggerVolume not set in editor"),);
+		UE_LOG(LogTemp,Error, TEXT("ATriggerVolume not set in editor"),);
 	}
 
 	if(TriggerVolume != nullptr)
