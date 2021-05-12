@@ -1,10 +1,10 @@
 # Building Escape made in unreal engine 4 and C++.
 
 
-Make sure to download and add Medieval Dungeon pack before running the project
+Make sure to download and add Medieval Dungeon pack before running the project.
 ![Alt text](Screenshots/screenshot_5.jpg?raw=true "screenshot 5")
 
-
+# Below is the small level I made using the Medieval Dungeon pack.
 ![Alt text](Screenshots/screenshot_1.jpg?raw=true "screenshot 1")
 
 ![Alt text](Screenshots/screenshot_2.jpg?raw=true "screenshot 2")
